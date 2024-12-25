@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Координатна лінійка</title>
+
+  <style>
+
+    #coordinate-ruler {
+      position: relative;
+      width: 550px;
+      height: 550px;
+      display: grid;
+      grid-template-columns: repeat(11, 50px); /* 10 клітинок + 1 для позначень */
+      grid-template-rows: repeat(11, 50px);   /* 10 клітинок + 1 для позначень */
+      border: 2px solid black;
+    }
+
+    .cell {
+      border: 1px solid #ccc;
+      text-align: center;
+      line-height: 50px;
+    }
+
+    .axis-label {
+      font-weight: bold;
+      background-color: #f0f0f0;
+    }
+
+    .square {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background-color: rgb(89, 0, 255);
+    }
+    .box{
+        margin-top: 20px;
+        display: grid;
+    }
+    .wrapper{
+      
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="box">
+  <!-- Перший
+    блок: Введення координат -->
+  <div class="inputs">
+    <label for="input-x">Координата X:</label>
+    <input type="number" id="input-x" min="1" max="10" />
+    <label for="input-y">Координата Y:</label>
+    <input type="number" id="input-y" min="1" max="10" />
+    <button id="place-square">Розмістити квадрат</button>
+  </div>
+
+  <!-- Другий блок: Координатна лінійка з квадратом -->
+  <div id="coordinate-ruler">
+      <!-- Лінійка генерується за допомогою JS -->
+    </div>
+    
+</div>
+</div>
+  <script>
+    // Отримуємо елемент лінійки
+    const ruler = document.getElementById('coordinate-ruler');
+    let currentSquare = null; // Змінна для збереження поточного квадрата
+
+    // Генеруємо сітку 11x11 (1 додатковий рядок/стовпець для позначень)
+    for (let row = 0; row < 11; row++) {
+      for (let col = 0; col < 11; col++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        
+        // Верхній рядок (мітки для осі X)
+        if (row === 0 && col > 0) {
+          cell.textContent = col; // Цифри 1-10
+          cell.classList.add('axis-label');
+        }
+        // Лівий стовпець (мітки для осі Y)
+        else if (col === 0 && row > 0) {
+          cell.textContent = row; // Цифри 1-10
+          cell.classList.add('axis-label');
+        }
+        
+        ruler.appendChild(cell);
+      }
+    }
+
+    // Обробник події для кнопки
+    document.getElementById('place-square').addEventListener('click', function() {
+      const x = parseInt(document.getElementById('input-x').value); // Отримуємо X
+      const y = parseInt(document.getElementById('input-y').value); // Отримуємо Y
+
+      // Перевіряємо, чи введені коректні координати
+      if (x >= 1 && x <= 10 && y >= 1 && y <= 10) {
+        // Видаляємо попередній квадрат (якщо він існує)
+        if (currentSquare) {
+          currentSquare.remove();
+        }
+
+        // Обчислюємо координати для розміщення квадрата
+        const squareX = x * 50; // Ширина клітинки * X
+        const squareY = y * 50; // Висота клітинки * Y
+
+        // Створюємо новий квадрат
+        const square = document.createElement('div');
+        square.classList.add('square');
+        square.style.left = `${squareX}px`; // Встановлюємо позицію по X
+        square.style.top = `${squareY}px`;  // Встановлюємо позицію по Y
+
+        // Додаємо квадрат до лінійки
+        ruler.appendChild(square);
+
+        // Зберігаємо новий квадрат у змінній
+        currentSquare = square;
+      } else {
+        alert('Введіть коректні координати (від 1 до 10).');
+      }
+    });
+  </script>
+</body>
+</html>
